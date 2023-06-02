@@ -1,22 +1,20 @@
-const maxmind = require("maxmind");
-const path = require("path");
-
+const fetch = require("node-fetch");
 const getLocation = async (ipAddress) => {
   try {
-    // console.log(__dirname); // Replace with the correct path to your GeoLite2 database file
-    // const databasePath = path.join(__dirname, "GeoLite2-City.mmdb");
-    const databasePath = path.join(process.cwd(), "GeoLite2-City.mmdb");
-    console.log("hello" + ipAddress);
+    const apiKey = "57d899da2683b524c62d168de44f1ded"; // Replace with your own API key
+    const url = `https://ipapi.com/${ipAddress}?access_key=${apiKey}`;
 
-    const lookup = await maxmind.open(databasePath);
-    const location = lookup.get(ipAddress);
+    const response = await fetch(url);
+    const data = await response.json();
 
-    if (location && location.city && location.country) {
-      const {
-        city,
-        country,
-        location: { latitude, longitude },
-      } = location;
+    if (
+      response.ok &&
+      data.city &&
+      data.country_name &&
+      data.latitude &&
+      data.longitude
+    ) {
+      const { city, country_name: country, latitude, longitude } = data;
       return { city, country, latitude, longitude };
     } else {
       return null;
@@ -27,4 +25,4 @@ const getLocation = async (ipAddress) => {
   }
 };
 
-module.exports = getLocation;
+export default getLocation;
