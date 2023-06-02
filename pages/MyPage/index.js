@@ -1,23 +1,20 @@
-// import getClientIP from "../../utils/getClientIP";
-import getLocation from "@/utils/getLocation";
-const MyPage = ({ clientLocation, clientIP }) => {
+import getClientLocation from "../../utils/getClientLocation";
+
+const MyPage = ({ clientLocation }) => {
   // Use the clientLocation in your component logic
   console.log("Client Location:", clientLocation);
-  console.log("Client IP:", clientIP);
 
   // Rest of your component code
 };
 
 export async function getServerSideProps({ req }) {
-  const clientIP =
-    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-  const clientLocation = await getLocation(clientIP);
+  const clientLocation = await getClientLocation(req);
 
   return {
     props: {
       clientLocation,
-      clientIP,
     },
   };
 }
+
 export default MyPage;
